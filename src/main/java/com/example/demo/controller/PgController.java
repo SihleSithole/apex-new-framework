@@ -156,7 +156,6 @@ public class PgController {
 	 }
 	 
      @GetMapping("/tutor-in-{location}-{currentPage}")
-	 @ResponseBody
 	 public String byLocationListNext(Model model, @PathVariable String location, @PathVariable int currentPage ) {
 		 
     	 System.out.println("Page Number : " + currentPage);
