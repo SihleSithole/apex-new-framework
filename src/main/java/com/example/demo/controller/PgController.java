@@ -157,9 +157,15 @@ public class PgController {
 	 
      @GetMapping("/tutor-in-{location}-{currentPage}")
 	 public String byLocationListNext(Model model, @PathVariable String location, @PathVariable int currentPage ) {
-		 
+
+    	 char lastChar = location.charAt(location.length() - 1);
+    	 int lastInt = Character.getNumericValue(lastChar);
+   
+    	 int indexOfDash = location.indexOf('-');
+    	 String beforeDash = location.substring(0, indexOfDash);
+    	 
     	 System.out.println("Page Number : " + currentPage);
-		 return byLocation(model, location, currentPage);
+		 return byLocation(model, beforeDash, lastInt);
 		 
 	 } 
 	 
