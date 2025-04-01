@@ -217,7 +217,7 @@
 		    <div class="paginat">
 		        
 		        <!-- Previous Page Button -->
-				<a th:href="@{/tutors-in-{location}-{page}(location=${location}, page=${currentPage - 1})}" 
+				<a th:href="@{/tutor-in-{location}-{page}(location=${location}, page=${currentPage - 1})}" 
 				   th:classappend="${currentPage > 1 ? '' : 'disabled'}" 
 				   class="prev">
 				    <i class="fas fa-arrow-left"></i>
@@ -226,11 +226,11 @@
 		        <!-- Page Number Links -->
 				<span th:each="i : ${#numbers.sequence(pageStart, pageEnd)}">
 				    <span th:classappend="${i == currentPage ? 'current' : ''}" class="page-number">
-				        <a th:href="@{/tutors-in-{location}-{page}(location=${location}, page=${i})}" th:text="${i}" class="page-number"></a>
+				        <a th:href="@{/tutor-in-{location}-{page}(location=${location}, page=${i})}" th:text="${i}" class="page-number"></a>
 				    </span>
 				</span>
 
-				<a th:href="@{/tutors-in-{location}-{page}(location=${location}, page=${currentPage + 1})}" 
+				<a th:href="@{/tutor-in-{location}-{page}(location=${location}, page=${currentPage + 1})}" 
 				   th:classappend="${currentPage < totalPages ? '' : 'disabled'}" 
 				   class="next">
 				    <i class="fas fa-arrow-right"></i>
