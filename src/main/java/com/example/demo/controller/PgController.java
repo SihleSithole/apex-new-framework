@@ -99,15 +99,7 @@ public class PgController {
 	 @Autowired
 	 private PaidBookingsService paidService;
 	 
-	/* @GetMapping("/")
-	 public ModelAndView getAllPages(@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-	     return getOnePage(currentPage);
-	 }*/
-	 
-	/* @GetMapping("/")
-	 public String getAllPages(@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-	    return "index";
-	 }*/
+	 /*Index Page*/
 	 
 	 @GetMapping("/")
 	 public String showTutors(Model model) {
@@ -152,6 +144,110 @@ public class PgController {
 	     // Return the ModelAndView object
 	     return "index";
 	 }
+	 
+	 /*Index Page*/
+	 
+	 /*TUTORS BY LOCATIONS*/
+	 
+	 @GetMapping("/tutors-in-{location}")
+	 public String byLocationList(Model model, @PathVariable String location,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	
+		 return byLocation(model, location, currentPage);
+	 }
+	 
+     @GetMapping("/tutor-in-{location}-{currentPage}")
+	 @ResponseBody
+	 public String byLocationListNext(Model model, @PathVariable String location, @PathVariable int currentPage ) {
+		 
+    	 System.out.println("Page Number : " + currentPage);
+		 return byLocation(model, location, currentPage);
+		 
+	 } 
+	 
+	 @GetMapping("/tutors-in-place")
+	 public String byLocation(Model model, String location, int currentPage) {
+		 
+		   System.out.println(location);
+	     
+	        String search = "l"+location;
+	      
+	        String[] v = search.split("_");
+	        
+	        System.out.println("Search By Location");
+
+		     // Check if there are at least two elements in the array
+	        
+		     if (v.length > 1) {
+		    	
+		         if (v[0].equalsIgnoreCase("lCape")) {
+		        	 System.out.println("We inside");
+		             search = "lCape Town";
+		             location = "Cape Town";
+		         } else if (v[0].equalsIgnoreCase("lKempton")) {
+		             search = "lKempton Park";
+		             location = "Kempton Park";
+		         } 
+		         
+		         else if (v[0].equalsIgnoreCase("lCosmo")) {
+		             search = "lCosmo City";
+		             location = "Cosmo City";
+		         } 
+		         
+		         else if (v[0].equalsIgnoreCase("lCentury")) {
+		             search = "lCentury City";
+		             location = "Century City";
+		         } 
+		         
+		         else if (v[0].equalsIgnoreCase("lBlue")) {
+		             search = "lBlue downs";
+		             location = "Blue downs";
+		         } 
+		         
+		         else if (v[0].equalsIgnoreCase("lMichells")) {
+		             search = "lMichells Plain";
+		             location = "Michells Plain";
+		         } 
+		         
+		         else if (v[0].equalsIgnoreCase("lNewlands")) {
+		             search = "lNewlands East";
+		             location = "Newlands East";
+		         } 
+
+		     } 
+		       
+	        // Get all tutors
+	        List<Tutor> tutors = tutorService.getAllTutors();
+	         
+	        Page<Tutor> page = tutorService.paginateTutorsByLocation(tutors, location, currentPage);
+
+	        System.out.println("Tutors found");
+	        
+		     int totalPages = page.getTotalPages();
+		     long totalItems = page.getTotalElements();
+		     
+			 long pageStart = Math.max(currentPage - 2, 1); // 
+			 long pageEnd = Math.min(currentPage + 3, totalPages); 
+		     
+		     List<Tutor> countries = page.getContent(); 
+
+		     model.addAttribute("user", countries);
+		     model.addAttribute("tutors", countries);
+		     
+		     model.addAttribute("totalPages", totalPages);
+		     model.addAttribute("totalItems", totalItems);
+		     
+		     model.addAttribute("pageStart", pageStart);
+		     model.addAttribute("pageEnd", pageEnd);
+		     
+		     model.addAttribute("currentPage", currentPage);
+		     model.addAttribute("location", location);
+		     
+		     // Return the ModelAndView object
+		     return "tutorsLocation";
+	        
+	    }
+	 
+	 /*TUTORS BY LOCATIONS*/
 
 	 
 	 
@@ -2227,106 +2323,7 @@ public class PgController {
 								}
 					 
 							 
-							 /*TUTORS BY LOCATIONS*/
-							 
-							 @GetMapping("/tutors-in-{location}")
-							 public String byLocationList(Model model, @PathVariable String location,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-							
-								 return byLocation(model, location, currentPage);
-							 }
-							 
-						     @GetMapping("/tutor-in-{location}-{currentPage}")
-							 @ResponseBody
-							 public String byLocationListNext(Model model, @PathVariable String location, @PathVariable int currentPage ) {
-								 
-						    	 System.out.println("Page Number : " + currentPage);
-								 return byLocation(model, location, currentPage);
-								 
-							 } 
-							 
-							 @GetMapping("/tutors-in-place")
-							 public String byLocation(Model model, String location, int currentPage) {
-								 
-								   System.out.println(location);
-							     
-							        String search = "l"+location;
-							      
-							        String[] v = search.split("_");
-							        
-							        System.out.println("Search By Location");
 
-								     // Check if there are at least two elements in the array
-							        
-								     if (v.length > 1) {
-								    	
-								         if (v[0].equalsIgnoreCase("lCape")) {
-								        	 System.out.println("We inside");
-								             search = "lCape Town";
-								             location = "Cape Town";
-								         } else if (v[0].equalsIgnoreCase("lKempton")) {
-								             search = "lKempton Park";
-								             location = "Kempton Park";
-								         } 
-								         
-								         else if (v[0].equalsIgnoreCase("lCosmo")) {
-								             search = "lCosmo City";
-								             location = "Cosmo City";
-								         } 
-								         
-								         else if (v[0].equalsIgnoreCase("lCentury")) {
-								             search = "lCentury City";
-								             location = "Century City";
-								         } 
-								         
-								         else if (v[0].equalsIgnoreCase("lBlue")) {
-								             search = "lBlue downs";
-								             location = "Blue downs";
-								         } 
-								         
-								         else if (v[0].equalsIgnoreCase("lMichells")) {
-								             search = "lMichells Plain";
-								             location = "Michells Plain";
-								         } 
-								         
-								         else if (v[0].equalsIgnoreCase("lNewlands")) {
-								             search = "lNewlands East";
-								             location = "Newlands East";
-								         } 
-	  
-								     } 
-								       
-							        // Get all tutors
-							        List<Tutor> tutors = tutorService.getAllTutors();
-							         
-							        Page<Tutor> page = tutorService.paginateTutorsByLocation(tutors, location, currentPage);
-			
-							        System.out.println("Tutors found");
-							        
-								     int totalPages = page.getTotalPages();
-								     long totalItems = page.getTotalElements();
-								     
-									 long pageStart = Math.max(currentPage - 2, 1); // 
-									 long pageEnd = Math.min(currentPage + 3, totalPages); 
-								     
-								     List<Tutor> countries = page.getContent(); 
-
-								     model.addAttribute("user", countries);
-								     model.addAttribute("tutors", countries);
-								     
-								     model.addAttribute("totalPages", totalPages);
-								     model.addAttribute("totalItems", totalItems);
-								     
-								     model.addAttribute("pageStart", pageStart);
-								     model.addAttribute("pageEnd", pageEnd);
-								     
-								     model.addAttribute("currentPage", currentPage);
-								     
-								     // Return the ModelAndView object
-								     return "index";
-							        
-							    }
-							 
-							 /*TUTORS BY LOCATIONS*/
 							 
 							 /*TUTORS BY SUBJECTS*/
 							 
