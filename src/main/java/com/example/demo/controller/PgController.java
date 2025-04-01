@@ -248,6 +248,116 @@ public class PgController {
 	    }
 	 
 	 /*TUTORS BY LOCATIONS*/
+	 
+	 
+	 /*TUTORS BY SUBJECTS*/
+	 
+	 @GetMapping("/{subjectv}-tutors")
+	 public String bySubjectsList(Model model, @PathVariable String subjectv,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	
+		 return bySubjects(model, subjectv, currentPage);
+		 
+	 }
+	 
+     @GetMapping("/{subjectv}-{currentPage}-tutor")
+	 @ResponseBody
+	 public String bySubjectsPagination(Model model, @PathVariable String subjectv, @PathVariable int currentPage ) {
+		 
+    	 System.out.println("Subject : " + subjectv);
+    	 System.out.println("Page Number : " + currentPage);
+    	 return bySubjects(model, subjectv, currentPage);
+		 
+	 } 
+	     
+     
+     /*Update the function*/
+	 @GetMapping("/bySubjects")
+	 public String bySubjects(Model model, @PathVariable String subjectv, int currentPage) {
+
+	    	String search = "s"+subjectv;
+	    	
+	    	String[] v = search.split("_");
+
+	    	System.out.println("The Length is: " + v.length);
+
+	    	// Check if there are enough elements in the array before accessing v[1] and v[2]
+	    	if (v.length > 1) {
+	    	    // Check for specific subject types
+	    	    if (v[1].equalsIgnoreCase("Literacy")) {
+	    	        search = "sMathematics Literacy";
+	    	        subjectv = "Mathematics Literacy";
+	    	    } else if (v[0].equalsIgnoreCase("sPhysical")) {
+	    	        search = "sPhysical Sciences";
+	    	        subjectv = "Physical Sciences";
+	    	    } else if (v[0].equalsIgnoreCase("sLife")) {
+	    	        search = "sLife Sciences";
+	    	        subjectv = "Life Sciences";
+	    	    } else if (v[0].equalsIgnoreCase("sNatural")) {
+	    	        search = "sNatural Sciences";
+	    	        subjectv = "Natural Sciences";
+	    	    } else if (v[0].equalsIgnoreCase("sBusiness")) {
+	    	        search = "sBusiness Studies";
+	    	        subjectv = "Business Studies";
+	    	    } else if (v[0].equalsIgnoreCase("sComputer")) {
+	    	        search = "sComputer Science";
+	    	        subjectv = "Computer Science";
+	    	    }
+	    	    
+	    	    else if (v[0].equalsIgnoreCase("sAgricultural")) {
+	    	        search = "sAgricultural Sciences";
+	    	        subjectv = "Agricultural Sciences";
+	    	    }
+	    	    
+	    	    else if (v[0].equalsIgnoreCase("sSocial")) {
+	    	        search = "sSocial Sciences";
+	    	        subjectv = "Social Sciences";
+	    	    }
+	    	    
+	    	    else {
+	    	    	
+	    	        // Fallback case if none of the conditions match
+	    	        search = "s"+subjectv;
+	    	    }
+	    	} else {
+	    	    // If the split result doesn't have enough parts (e.g., no underscore), fallback
+	    	    search = "s"+subjectv;  // Default to the original subject
+	    	}
+	    	
+	    	System.out.println("we here");
+
+	    	List<Tutor> tutors = tutorService.getAllTutors();
+	    	
+	        Page<Tutor> page = tutorService.paginateTutorsBySubject(tutors,subjectv, currentPage);
+			
+	        System.out.println("Tutors found");
+	        
+		     int totalPages = page.getTotalPages();
+		     long totalItems = page.getTotalElements();
+		     
+			 long pageStart = Math.max(currentPage - 2, 1); // 
+			 long pageEnd = Math.min(currentPage + 3, totalPages); 
+		     
+		     List<Tutor> countries = page.getContent(); 
+
+		     model.addAttribute("user", countries);
+		     model.addAttribute("tutors", countries);
+		     
+		     model.addAttribute("totalPages", totalPages);
+		     model.addAttribute("totalItems", totalItems);
+		     
+		     model.addAttribute("pageStart", pageStart);
+		     model.addAttribute("pageEnd", pageEnd);
+		     
+		     model.addAttribute("subject", subjectv);		     
+		     model.addAttribute("currentPage", currentPage);
+		     
+		     // Return the ModelAndView object
+		     return "index";
+	        
+	        
+	    }
+	 
+	 /*TUTORS BY SYLLABUS*/
 
 	 
 	 
@@ -2324,114 +2434,7 @@ public class PgController {
 					 
 							 
 
-							 
-							 /*TUTORS BY SUBJECTS*/
-							 
-							 @GetMapping("/{subjectv}-tutors")
-							 public String bySubjectsList(Model model, @PathVariable String subjectv,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-							
-								 return bySubjects(model, subjectv, currentPage);
-								 
-							 }
-							 
-						     @GetMapping("/{subjectv}-{currentPage}-tutor")
-							 @ResponseBody
-							 public String bySubjectsPagination(Model model, @PathVariable String subjectv, @PathVariable int currentPage ) {
-								 
-						    	 System.out.println("Subject : " + subjectv);
-						    	 System.out.println("Page Number : " + currentPage);
-						    	 return bySubjects(model, subjectv, currentPage);
-								 
-							 } 
-							     
-						     
-						     /*Update the function*/
-							 @GetMapping("/bySubjects")
-							 public String bySubjects(Model model, @PathVariable String subjectv, int currentPage) {
 
-							    	String search = "s"+subjectv;
-							    	
-							    	String[] v = search.split("_");
-
-							    	System.out.println("The Length is: " + v.length);
-
-							    	// Check if there are enough elements in the array before accessing v[1] and v[2]
-							    	if (v.length > 1) {
-							    	    // Check for specific subject types
-							    	    if (v[1].equalsIgnoreCase("Literacy")) {
-							    	        search = "sMathematics Literacy";
-							    	        subjectv = "Mathematics Literacy";
-							    	    } else if (v[0].equalsIgnoreCase("sPhysical")) {
-							    	        search = "sPhysical Sciences";
-							    	        subjectv = "Physical Sciences";
-							    	    } else if (v[0].equalsIgnoreCase("sLife")) {
-							    	        search = "sLife Sciences";
-							    	        subjectv = "Life Sciences";
-							    	    } else if (v[0].equalsIgnoreCase("sNatural")) {
-							    	        search = "sNatural Sciences";
-							    	        subjectv = "Natural Sciences";
-							    	    } else if (v[0].equalsIgnoreCase("sBusiness")) {
-							    	        search = "sBusiness Studies";
-							    	        subjectv = "Business Studies";
-							    	    } else if (v[0].equalsIgnoreCase("sComputer")) {
-							    	        search = "sComputer Science";
-							    	        subjectv = "Computer Science";
-							    	    }
-							    	    
-							    	    else if (v[0].equalsIgnoreCase("sAgricultural")) {
-							    	        search = "sAgricultural Sciences";
-							    	        subjectv = "Agricultural Sciences";
-							    	    }
-							    	    
-							    	    else if (v[0].equalsIgnoreCase("sSocial")) {
-							    	        search = "sSocial Sciences";
-							    	        subjectv = "Social Sciences";
-							    	    }
-							    	    
-							    	    else {
-							    	    	
-							    	        // Fallback case if none of the conditions match
-							    	        search = "s"+subjectv;
-							    	    }
-							    	} else {
-							    	    // If the split result doesn't have enough parts (e.g., no underscore), fallback
-							    	    search = "s"+subjectv;  // Default to the original subject
-							    	}
-							    	
-							    	System.out.println("we here");
-						
-							    	List<Tutor> tutors = tutorService.getAllTutors();
-							    	
-							        Page<Tutor> page = tutorService.paginateTutorsBySubject(tutors,subjectv, currentPage);
-									
-							        System.out.println("Tutors found");
-							        
-								     int totalPages = page.getTotalPages();
-								     long totalItems = page.getTotalElements();
-								     
-									 long pageStart = Math.max(currentPage - 2, 1); // 
-									 long pageEnd = Math.min(currentPage + 3, totalPages); 
-								     
-								     List<Tutor> countries = page.getContent(); 
-
-								     model.addAttribute("user", countries);
-								     model.addAttribute("tutors", countries);
-								     
-								     model.addAttribute("totalPages", totalPages);
-								     model.addAttribute("totalItems", totalItems);
-								     
-								     model.addAttribute("pageStart", pageStart);
-								     model.addAttribute("pageEnd", pageEnd);
-								     
-								     model.addAttribute("currentPage", currentPage);
-								     
-								     // Return the ModelAndView object
-								     return "index";
-							        
-							        
-							    }
-							 
-							 /*TUTORS BY SYLLABUS*/
 							 
 							 @GetMapping("/syllabus-{syllabus}")
 							 public String bySyllabusList(Model model, @PathVariable String syllabus,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
