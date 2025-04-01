@@ -171,9 +171,7 @@ public class PgController {
 	 
 	 @GetMapping("/tutors-in-place")
 	 public String byLocation(Model model, String location, int currentPage) {
-		 
-		   System.out.println(location);
-	     
+	
 	        String search = "l"+location;
 	      
 	        String[] v = search.split("_");
