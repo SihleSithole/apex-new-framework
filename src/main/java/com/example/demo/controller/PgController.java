@@ -558,7 +558,7 @@ public class PgController {
 	    public String getTry(@RequestParam("email") String email) {
 	    	
 	     
-	    	List<Tutor> shuffleTutors = tutorService.shuffleTutors();
+	    	/*List<Tutor> shuffleTutors = tutorService.shuffleTutors();
 		     List<Tutor> tutors = tutorService.viewProfile(shuffleTutors);
 	 
 	       // String tutorEmail = simpleDecrypt(email);
