@@ -516,11 +516,6 @@ public class PgController {
 	        }
 	       
 	        Page<Tutor> page = tutorService.paginateTutorsBySyllabus(filteredTutors, currentPage);
-		
-		   /*  modelAndView.addObject("location", location);
-		     modelAndView.addObject("description" , description);
-		     modelAndView.addObject("title_title" , title); */
-		
 		     
 		        System.out.println("Tutors found");
 		        
@@ -532,6 +527,9 @@ public class PgController {
 			     
 			     List<Tutor> countries = page.getContent(); 
 
+			     model.addAttribute("title", title);
+			     model.addAttribute("description", description);
+			     
 			     model.addAttribute("user", countries);
 			     model.addAttribute("tutors", countries);
 			     
@@ -551,6 +549,15 @@ public class PgController {
 	    }
 	 
 	 /*TUTORS BY SYLLABUS*/
+	 
+	 
+	 /*TUTORS PROFILE*/
+	 
+	 
+	 
+	 /*TUTORS PROFILE*/
+	 
+
 
 	 
 	 
