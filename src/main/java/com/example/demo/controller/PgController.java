@@ -557,6 +557,17 @@ public class PgController {
 	    @GetMapping("/view-profile")
 	    public String getTry(@RequestParam("email") String email) {
 	    	
+	    	Tutor tutorView = new Tutor();
+	    	List<Tutor> tutors = tutorService.getAllTutors();
+	    	
+	        for (Tutor tutor : tutors) {
+	            // If a tutor's email matches the search email, return that tutor
+	            if (tutor.getEmail().equalsIgnoreCase(email)) {
+	            	
+	            	tutorView = tutor;
+	               
+	            }
+	        }
 	     
 	    	/*List<Tutor> shuffleTutors = tutorService.shuffleTutors();
 		     List<Tutor> tutors = tutorService.viewProfile(shuffleTutors);
