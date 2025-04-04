@@ -541,10 +541,11 @@ public class PgController {
 			     model.addAttribute("pageStart", pageStart);
 			     model.addAttribute("pageEnd", pageEnd);
 			     
+			     model.addAttribute("syllabus", location);	
 			     model.addAttribute("currentPage", currentPage);
 			     
 			     // Return the ModelAndView object
-			     return "index";
+			     return "tutorsSyllabus";
 	        
 
 	    }
