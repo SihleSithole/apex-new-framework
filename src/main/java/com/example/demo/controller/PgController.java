@@ -554,6 +554,65 @@ public class PgController {
 	 /*TUTORS PROFILE*/
 	 
 	 
+	    @GetMapping("/view-profile")
+	    public String getTry(@RequestParam("email") String email) {
+	    	
+	        Random rand = new Random();
+	        int randomInt = rand.nextInt(7) + 1; 
+	    	
+		     Page<Tutor> page = tutorService.viewProfile(randomInt);
+
+		     List<Tutor> tutors = page.getContent();
+	 
+	        String tutorEmail = simpleDecrypt(email);
+	        
+	        Optional<Tutor> opT = tutorRepo.findById(tutorEmail);
+	        Tutor tutor = new Tutor();
+	        
+	        List<Review> reviews = reviewService.listAll();
+	            
+	        if (opT.isPresent()){
+	            tutor = opT.get();
+	        }
+	        
+	        String name = tutor.getFullNames();
+
+	     /*   ModelAndView data = new ModelAndView("profile.jsp"); // load the admin dashboard
+	        data.addObject("tutor", tutor);
+	        data.addObject("tutors", tutors);
+	        data.addObject("name", name);
+	        data.addObject("reviews", reviews);	 
+	        data.addObject("email", email);	*/
+	        
+	        return "profile";   
+	        
+	    }
+	    
+	    public String simpleDecrypt(String encryptedText) {
+	        int shift = 3; // This should match the shift used in encryption
+	        StringBuilder decrypted = new StringBuilder();
+	        
+	        for (int i = 0; i < encryptedText.length(); i++) {
+	            char ch = encryptedText.charAt(i);
+	            
+	            // Shift uppercase letters
+	            if (ch >= 'A' && ch <= 'Z') {
+	                ch = (char) (((ch - 'A' - shift + 26) % 26) + 'A');
+	            }
+	            // Shift lowercase letters
+	            else if (ch >= 'a' && ch <= 'z') {
+	                ch = (char) (((ch - 'a' - shift + 26) % 26) + 'a');
+	            }
+	            // Shift numbers
+	            else if (ch >= '0' && ch <= '9') {
+	                ch = (char) (((ch - '0' - shift + 10) % 10) + '0');
+	            }
+	            
+	            decrypted.append(ch);
+	        }
+	        return decrypted.toString();
+	    }
+	 
 	 
 	 /*TUTORS PROFILE*/
 	 
@@ -1534,39 +1593,7 @@ public class PgController {
 			 
 		 }
   
-		    @GetMapping("/view-profile")
-		    public ModelAndView getTry(@RequestParam("email") String email) {
-		    	
-		        Random rand = new Random();
-		        int randomInt = rand.nextInt(7) + 1; 
-		    	
-			     Page<Tutor> page = tutorService.viewProfile(randomInt);
 
-			     List<Tutor> tutors = page.getContent();
-		 
-		        String tutorEmail = simpleDecrypt(email);
-		        
-		        Optional<Tutor> opT = tutorRepo.findById(tutorEmail);
-		        Tutor tutor = new Tutor();
-		        
-		        List<Review> reviews = reviewService.listAll();
-		            
-		        if (opT.isPresent()){
-		            tutor = opT.get();
-		        }
-		        
-		        String name = tutor.getFullNames();
-   
-		        ModelAndView data = new ModelAndView("profile.jsp"); // load the admin dashboard
-		        data.addObject("tutor", tutor);
-		        data.addObject("tutors", tutors);
-		        data.addObject("name", name);
-		        data.addObject("reviews", reviews);	 
-		        data.addObject("email", email);	
-		        
-		        return data;   
-		        
-		    }
 		    
 
 		    /*DELETE CONSULT BOOKING*/
@@ -1778,30 +1805,7 @@ public class PgController {
 			        
 			    }
 			    
-			    public String simpleDecrypt(String encryptedText) {
-			        int shift = 3; // This should match the shift used in encryption
-			        StringBuilder decrypted = new StringBuilder();
-			        
-			        for (int i = 0; i < encryptedText.length(); i++) {
-			            char ch = encryptedText.charAt(i);
-			            
-			            // Shift uppercase letters
-			            if (ch >= 'A' && ch <= 'Z') {
-			                ch = (char) (((ch - 'A' - shift + 26) % 26) + 'A');
-			            }
-			            // Shift lowercase letters
-			            else if (ch >= 'a' && ch <= 'z') {
-			                ch = (char) (((ch - 'a' - shift + 26) % 26) + 'a');
-			            }
-			            // Shift numbers
-			            else if (ch >= '0' && ch <= '9') {
-			                ch = (char) (((ch - '0' - shift + 10) % 10) + '0');
-			            }
-			            
-			            decrypted.append(ch);
-			        }
-			        return decrypted.toString();
-			    }
+
 			    
 			    /*RENDER THE BOOKING PAGE*/
 			    
