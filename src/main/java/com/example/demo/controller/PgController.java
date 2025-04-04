@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -101,12 +102,14 @@ public class PgController {
 	 
 	 /*Index Page*/
 	 
+	 @Cacheable("pageCache")
 	 @GetMapping("/")
 	 public String showTutors(Model model) {
 	   int currentPage = 1;
 	    return getOnePage(model,currentPage);
 	 }
 	 
+	 @Cacheable("pageCache")
 	 @GetMapping("/tutors-{location}")
 	 public String tutorsList(Model model, @PathVariable int location) {
 		 
@@ -149,12 +152,14 @@ public class PgController {
 	 
 	 /*TUTORS BY LOCATIONS*/
 	 
+	 @Cacheable("pageCache")
 	 @GetMapping("/tutors-in-{location}")
 	 public String byLocationList(Model model, @PathVariable String location,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
 	
 		 return byLocation(model, location, currentPage);
 	 }
 	 
+	 @Cacheable("pageCache")
      @GetMapping("/tutor-in-{location}-{currentPage}")
 	 public String byLocationListNext(Model model, @PathVariable String location, @PathVariable int currentPage ) {
 		 
@@ -251,6 +256,7 @@ public class PgController {
 	 
 	 /*TUTORS BY SUBJECTS*/
 	 
+	 @Cacheable("pageCache")
 	 @GetMapping("/{subjectv}-tutors")
 	 public String bySubjectsList(Model model, @PathVariable String subjectv,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
 	
@@ -258,8 +264,8 @@ public class PgController {
 		 
 	 }
 	 
+	 @Cacheable("pageCache")
      @GetMapping("/{subjectv}-{currentPage}-tutor")
-	 @ResponseBody
 	 public String bySubjectsPagination(Model model, @PathVariable String subjectv, @PathVariable int currentPage ) {
 		 
     	 System.out.println("Subject : " + subjectv);
@@ -354,6 +360,193 @@ public class PgController {
 		     return "tutorsSubject";
 	        
 	        
+	    }
+	 
+	 /*TUTORS BY SYLLABUS*/
+	 
+     /*TUTORS BY SYLLABUS*/
+
+	 @Cacheable("pageCache")	 
+	 @GetMapping("/syllabus-{syllabus}")
+	 public String bySyllabusList(Model model, @PathVariable String syllabus,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	
+		 return bySyllabus(model, syllabus, currentPage);
+	 }
+	 @Cacheable("pageCache")
+     @GetMapping("/tutor-syllabus-{syllabus}-{currentPage}")
+	 public String bySyllabusPagination(Model model, @PathVariable String syllabus, @PathVariable int currentPage ) {
+		 
+    	 System.out.println("Subject : " + syllabus);
+    	 System.out.println("Page Number : " + currentPage);
+    	 return bySyllabus(model, syllabus, currentPage);
+		 
+	 } 
+	   
+	 
+	 @GetMapping("/bySyllabus")
+	 @ResponseBody
+	 public String bySyllabus(Model model, String location, int currentPage) {
+	    
+	        String search = "c"+location;
+	      
+	        String[] v = search.split("_");
+	        
+	        System.out.println(v.length);
+
+		     // Check if there are at least two elements in the array
+	        
+		     if (v.length > 1) {
+		    	
+		         if (v[0].equalsIgnoreCase("cPearson")) {
+		        	 System.out.println("We inside");
+		             search = "cPearson Edexcel";
+		             location = "Pearson Edexcel";
+		         }
+		        
+
+		     } 
+	        
+	        System.out.println("Search Input: " + search); // For debugging
+
+	        // Split the search string by commas
+	        String[] searchParams = search.split(",");
+
+	        // Create an array to hold the filters
+	        String[] filters = new String[4];
+
+	        // Parse the search parameters
+	        for (String param : searchParams) {
+	            if (param.startsWith("l")) {
+	                filters[0] = param.substring(1).trim(); // Set location
+	            } else if (param.startsWith("s")) {
+	                filters[1] = param.substring(1).trim(); // Set subject
+	            } else if (param.startsWith("c")) {
+	                filters[2] = param.substring(1).trim(); // Set curriculum
+	            } else if (param.startsWith("t")) {
+	                filters[3] = param.substring(1).trim(); // Set tutoring option
+	            }
+	        }
+
+	        // Get all tutors
+	        List<Tutor> tutors = tutorService.getAllTutors();
+
+	        // Filter the tutors based on the provided attributes
+	        List<Tutor> filteredTutors = tutors.stream()
+	            .filter(tutor -> {
+	                boolean matches = true;
+
+	                // Check location
+	                if (filters[0] != null) {
+	                    String[] areas = tutor.getArea().split(",\\s*");
+	                    String[] countries = tutor.getCountry().split(",\\s*");
+	                    String address = tutor.getAddress(); // Get the tutor's address
+
+	                    matches = Arrays.stream(areas)
+	                        .anyMatch(area -> area.equalsIgnoreCase(filters[0])) || 
+	                        Arrays.stream(countries)
+	                        .anyMatch(country -> country.equalsIgnoreCase(filters[0])) ||
+	                        address.equalsIgnoreCase(filters[0]); // Check if the address matches the filter
+	                }
+
+	                // Check subjects
+	                if (matches && filters[1] != null) {
+	                    String[] subjects = tutor.getSubjects().split(",\\s*");
+	                    matches = Arrays.stream(subjects)
+	                        .anyMatch(subject -> subject.equalsIgnoreCase(filters[1]));
+	                }
+
+	                // Check syllabus
+	                if (matches && filters[2] != null) {
+	                    String[] syllabuses = tutor.getSyllabus().split(",\\s*");
+	                    matches = Arrays.stream(syllabuses)
+	                        .anyMatch(syllabus -> syllabus.equalsIgnoreCase(filters[2]));
+	                }
+
+	             // Check availability
+	                if (matches && filters[3] != null) {
+	                    String[] availabilities = tutor.getAvailability().split("/");
+
+	                    // Trim each availability to remove leading/trailing whitespace
+	                    availabilities = Arrays.stream(availabilities)
+	                        .map(String::trim) // Trim each element
+	                        .toArray(String[]::new); // Collect back to an array
+
+	                    // Check if any availability matches the filter (case insensitive)
+	                    matches = Arrays.stream(availabilities)
+	                        .anyMatch(availability -> availability.equalsIgnoreCase(filters[3]));
+	                }
+	                return matches;
+	            })
+	            .collect(Collectors.toList());
+	        
+	        String description = "";
+	        String title = "Expert " + location + " Tutors | Personalized Online and In-Person Lessons";
+	        
+	        if(location.equals("IEB")) {
+	        	
+	        	title = "Expert " + location + " Tutors | Personalized Online and In-Person Lessons";
+	        	description = "Unlock academic success with Apex Academic Centre's expert IEB tutors. Get personalized online and in-person lessons tailored to your needs.";
+	        }
+	        
+	        else {
+	        	
+	        	if(location.equals("CAPS")) {
+		        	
+	        		title = "CAPS Tutors | Expert Online and In-Person Lessons for South African Students";
+		        	description = "CAPS Tutors | Expert Online and In-Person Lessons for South African Students";
+		        }
+	        	
+	        	else {
+	        		
+	        	 	if(location.equals("Cambridge")) {
+			        	
+	        	 		title = "Cambridge Tutors | Expert Online and In-Person Tutoring Services";
+			        	description = "Discover the benefits of personalized Cambridge tutoring with Apex Academic Centre. Expert online and in-person lessons for academic success.";
+			        	
+	        	 	}
+	        	 	
+	        	 	else {
+	        	 		
+	        	 		title = "Pearson Edexcel Tutors | Expert Online and In-Person Tutoring Services";
+	        	 		description = "Unlock your potential with Apex Academic Centre's expert Pearson Edexcel tutors. Personalized online and in-person lessons for academic success.";
+	        	 	}
+		        	
+	        		
+	        	}
+	        }
+	       
+	        Page<Tutor> page = tutorService.paginateTutorsBySyllabus(filteredTutors, currentPage);
+		
+		   /*  modelAndView.addObject("location", location);
+		     modelAndView.addObject("description" , description);
+		     modelAndView.addObject("title_title" , title); */
+		
+		     
+		        System.out.println("Tutors found");
+		        
+			     int totalPages = page.getTotalPages();
+			     long totalItems = page.getTotalElements();
+			     
+				 long pageStart = Math.max(currentPage - 2, 1); // 
+				 long pageEnd = Math.min(currentPage + 3, totalPages); 
+			     
+			     List<Tutor> countries = page.getContent(); 
+
+			     model.addAttribute("user", countries);
+			     model.addAttribute("tutors", countries);
+			     
+			     model.addAttribute("totalPages", totalPages);
+			     model.addAttribute("totalItems", totalItems);
+			     
+			     model.addAttribute("pageStart", pageStart);
+			     model.addAttribute("pageEnd", pageEnd);
+			     
+			     model.addAttribute("currentPage", currentPage);
+			     
+			     // Return the ModelAndView object
+			     return "index";
+	        
+
 	    }
 	 
 	 /*TUTORS BY SYLLABUS*/
@@ -2433,190 +2626,6 @@ public class PgController {
 					 
 							 
 
-
-							 
-							 @GetMapping("/syllabus-{syllabus}")
-							 public String bySyllabusList(Model model, @PathVariable String syllabus,@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-							
-								 return bySyllabus(model, syllabus, currentPage);
-							 }
-							 
-						     @GetMapping("/tutor-syllabus-{syllabus}-{currentPage}")
-							 @ResponseBody
-							 public String bySyllabusPagination(Model model, @PathVariable String syllabus, @PathVariable int currentPage ) {
-								 
-						    	 System.out.println("Subject : " + syllabus);
-						    	 System.out.println("Page Number : " + currentPage);
-						    	 return bySyllabus(model, syllabus, currentPage);
-								 
-							 } 
-							   
-							 
-							 @GetMapping("/bySyllabus")
-							 @ResponseBody
-							 public String bySyllabus(Model model, String location, int currentPage) {
-							    
-							        String search = "c"+location;
-							      
-							        String[] v = search.split("_");
-							        
-							        System.out.println(v.length);
-
-								     // Check if there are at least two elements in the array
-							        
-								     if (v.length > 1) {
-								    	
-								         if (v[0].equalsIgnoreCase("cPearson")) {
-								        	 System.out.println("We inside");
-								             search = "cPearson Edexcel";
-								             location = "Pearson Edexcel";
-								         }
-								        
-
-								     } 
-							        
-							        System.out.println("Search Input: " + search); // For debugging
-
-							        // Split the search string by commas
-							        String[] searchParams = search.split(",");
-
-							        // Create an array to hold the filters
-							        String[] filters = new String[4];
-
-							        // Parse the search parameters
-							        for (String param : searchParams) {
-							            if (param.startsWith("l")) {
-							                filters[0] = param.substring(1).trim(); // Set location
-							            } else if (param.startsWith("s")) {
-							                filters[1] = param.substring(1).trim(); // Set subject
-							            } else if (param.startsWith("c")) {
-							                filters[2] = param.substring(1).trim(); // Set curriculum
-							            } else if (param.startsWith("t")) {
-							                filters[3] = param.substring(1).trim(); // Set tutoring option
-							            }
-							        }
-
-							        // Get all tutors
-							        List<Tutor> tutors = tutorService.getAllTutors();
-
-							        // Filter the tutors based on the provided attributes
-							        List<Tutor> filteredTutors = tutors.stream()
-							            .filter(tutor -> {
-							                boolean matches = true;
-
-							                // Check location
-							                if (filters[0] != null) {
-							                    String[] areas = tutor.getArea().split(",\\s*");
-							                    String[] countries = tutor.getCountry().split(",\\s*");
-							                    String address = tutor.getAddress(); // Get the tutor's address
-
-							                    matches = Arrays.stream(areas)
-							                        .anyMatch(area -> area.equalsIgnoreCase(filters[0])) || 
-							                        Arrays.stream(countries)
-							                        .anyMatch(country -> country.equalsIgnoreCase(filters[0])) ||
-							                        address.equalsIgnoreCase(filters[0]); // Check if the address matches the filter
-							                }
-
-							                // Check subjects
-							                if (matches && filters[1] != null) {
-							                    String[] subjects = tutor.getSubjects().split(",\\s*");
-							                    matches = Arrays.stream(subjects)
-							                        .anyMatch(subject -> subject.equalsIgnoreCase(filters[1]));
-							                }
-
-							                // Check syllabus
-							                if (matches && filters[2] != null) {
-							                    String[] syllabuses = tutor.getSyllabus().split(",\\s*");
-							                    matches = Arrays.stream(syllabuses)
-							                        .anyMatch(syllabus -> syllabus.equalsIgnoreCase(filters[2]));
-							                }
-
-							             // Check availability
-							                if (matches && filters[3] != null) {
-							                    String[] availabilities = tutor.getAvailability().split("/");
-
-							                    // Trim each availability to remove leading/trailing whitespace
-							                    availabilities = Arrays.stream(availabilities)
-							                        .map(String::trim) // Trim each element
-							                        .toArray(String[]::new); // Collect back to an array
-
-							                    // Check if any availability matches the filter (case insensitive)
-							                    matches = Arrays.stream(availabilities)
-							                        .anyMatch(availability -> availability.equalsIgnoreCase(filters[3]));
-							                }
-							                return matches;
-							            })
-							            .collect(Collectors.toList());
-							        
-							        String description = "";
-							        String title = "Expert " + location + " Tutors | Personalized Online and In-Person Lessons";
-							        
-							        if(location.equals("IEB")) {
-							        	
-							        	title = "Expert " + location + " Tutors | Personalized Online and In-Person Lessons";
-							        	description = "Unlock academic success with Apex Academic Centre's expert IEB tutors. Get personalized online and in-person lessons tailored to your needs.";
-							        }
-							        
-							        else {
-							        	
-							        	if(location.equals("CAPS")) {
-								        	
-							        		title = "CAPS Tutors | Expert Online and In-Person Lessons for South African Students";
-								        	description = "CAPS Tutors | Expert Online and In-Person Lessons for South African Students";
-								        }
-							        	
-							        	else {
-							        		
-							        	 	if(location.equals("Cambridge")) {
-									        	
-							        	 		title = "Cambridge Tutors | Expert Online and In-Person Tutoring Services";
-									        	description = "Discover the benefits of personalized Cambridge tutoring with Apex Academic Centre. Expert online and in-person lessons for academic success.";
-									        	
-							        	 	}
-							        	 	
-							        	 	else {
-							        	 		
-							        	 		title = "Pearson Edexcel Tutors | Expert Online and In-Person Tutoring Services";
-							        	 		description = "Unlock your potential with Apex Academic Centre's expert Pearson Edexcel tutors. Personalized online and in-person lessons for academic success.";
-							        	 	}
-								        	
-							        		
-							        	}
-							        }
-							       
-							        Page<Tutor> page = tutorService.paginateTutorsBySyllabus(filteredTutors, currentPage);
-								
-								   /*  modelAndView.addObject("location", location);
-								     modelAndView.addObject("description" , description);
-								     modelAndView.addObject("title_title" , title); */
-								
-								     
-								        System.out.println("Tutors found");
-								        
-									     int totalPages = page.getTotalPages();
-									     long totalItems = page.getTotalElements();
-									     
-										 long pageStart = Math.max(currentPage - 2, 1); // 
-										 long pageEnd = Math.min(currentPage + 3, totalPages); 
-									     
-									     List<Tutor> countries = page.getContent(); 
-
-									     model.addAttribute("user", countries);
-									     model.addAttribute("tutors", countries);
-									     
-									     model.addAttribute("totalPages", totalPages);
-									     model.addAttribute("totalItems", totalItems);
-									     
-									     model.addAttribute("pageStart", pageStart);
-									     model.addAttribute("pageEnd", pageEnd);
-									     
-									     model.addAttribute("currentPage", currentPage);
-									     
-									     // Return the ModelAndView object
-									     return "index";
-							        
-
-							    }
 							 
 							 
 						/*	 @PostMapping("/subscribe")
