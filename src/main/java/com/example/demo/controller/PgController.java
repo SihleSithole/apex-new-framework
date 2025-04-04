@@ -557,16 +557,13 @@ public class PgController {
 	    @GetMapping("/view-profile")
 	    public String getTry(@RequestParam("email") String email) {
 	    	
-	        Random rand = new Random();
-	        int randomInt = rand.nextInt(7) + 1; 
-	    	
-		     Page<Tutor> page = tutorService.viewProfile(randomInt);
-
-		     List<Tutor> tutors = page.getContent();
+	     
+	    	List<Tutor> shuffleTutors = tutorService.shuffleTutors();
+		     List<Tutor> tutors = tutorService.viewProfile(shuffleTutors);
 	 
-	        String tutorEmail = simpleDecrypt(email);
+	       // String tutorEmail = simpleDecrypt(email);
 	        
-	        Optional<Tutor> opT = tutorRepo.findById(tutorEmail);
+	      /*  Optional<Tutor> opT = tutorRepo.findById(tutorEmail);
 	        Tutor tutor = new Tutor();
 	        
 	        List<Review> reviews = reviewService.listAll();

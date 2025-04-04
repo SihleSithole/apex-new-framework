@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class TutorService {
 	private TutorRepository repo;
 	
 	private List<Tutor> tutors;
+	private List<Tutor> shuffleTutors;
 	
     @PostConstruct
     public void init() {
@@ -45,16 +47,102 @@ public class TutorService {
         
         System.out.println("Tutor data preloaded at startup!");
         
-    }
+        Collections.shuffle(tutors);
 
+        // Pick the first 'pageSize' tutors after shuffling (5 tutors in this case)
+       shuffleTutors = tutors.subList(0, Math.min(100, tutors.size()));
+
+        
+    }
+    
     public List<Tutor> getAllTutors() {
         return tutors;
     }
-	
-	public List<Tutor> listAll(){
+    
+    public List<Tutor> shuffleTutors() {
+        return shuffleTutors;
+    }
 		
-		 return repo.findAll();
-	}
+	/*TUTORS BY LOCATION*/
+	 
+	 public Page<Tutor> paginateTutorsByLocation(List<Tutor> tutors, String location, int currentPage) {
+		    int pageSize = 10; // Number of tutors per page
+
+		    // Filter the list by subject
+		    List<Tutor> filteredTutors = tutors.stream()
+		            .filter(tutor -> tutor.getArea().contains(location))
+		            .collect(Collectors.toList());
+
+		    // Calculate pagination indices
+		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
+		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
+
+		    // Sublist to create a page of tutors
+		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
+
+		    // Return a Page object with the sublist
+		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
+		}
+		
+	 /*TUTORS BY SUBJECT*/
+
+	 public Page<Tutor> paginateTutorsBySubject(List<Tutor> tutors, String subject, int currentPage) {
+		    int pageSize = 10; // Number of tutors per page
+
+		    // Filter the list by subject
+		    List<Tutor> filteredTutors = tutors.stream()
+		            .filter(tutor -> tutor.getSubjects().contains(subject))
+		            .collect(Collectors.toList());
+
+		    // Calculate pagination indices
+		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
+		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
+
+		    // Sublist to create a page of tutors
+		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
+
+		    // Return a Page object with the sublist
+		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
+		}
+	 
+	 /*TUTORS BY SYLLABUS*/
+
+	 public Page<Tutor> paginateTutorsBySyllabus(List<Tutor> filteredTutors,  int currentPage) {
+		    int pageSize = 10; // Number of tutors per page
+
+		    // Calculate pagination indices
+		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
+		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
+
+		    // Sublist to create a page of tutors
+		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
+
+		    // Return a Page object with the sublist
+		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
+		}
+	 
+	 /*VIEW PROFILE*/
+	 
+	    public List<Tutor> viewProfile(List<Tutor> filteredTutors) {
+	        
+	        // Pick the first 5 tutors after shuffling
+	        return filteredTutors.subList(0, Math.min(5, filteredTutors.size()));
+	    }
+
+	 /*VIEW PROFILE*/
+	 
+	
+	
+	
+	
+	
+	
+	
+	    public List<Tutor> listAll() {
+	        return tutors;
+	    }
+
+	
 	
 	public List<Tutor> getRandomTutors() {
 	    // Get all tutors
@@ -128,19 +216,6 @@ public class TutorService {
 		
 	}
 
-/*	public Page<Tutor> findPage(int pageNumber){
-		
-	    Pageable pageable = PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Order.desc("ratings")));
-	    return repo.findAll(pageable);
-	    
-	} */
-	
-/*	@Cacheable("tutors")
-	public Page<TutorProjection> findPage(int pageNumber) {
-	    Pageable pageable = PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Order.desc("ratings")));
-	    return repo.findAllProjectedBy(pageable);
-	}*/
-	
 	public Page<Tutor> findPage(List<Tutor> tutorProjections, int pageNumber, int pageSize) {
 	    // Calculate the start index for the pagination
 	    int start = (pageNumber - 1) * pageSize;
@@ -156,70 +231,9 @@ public class TutorService {
 	    return new PageImpl<>(pagedList, pageable, tutorProjections.size());
 	}
 	
-	/*TUTORS BY LOCATION*/
+
 	 
-	 public Page<Tutor> paginateTutorsByLocation(List<Tutor> tutors, String location, int currentPage) {
-		    int pageSize = 10; // Number of tutors per page
-
-		    // Filter the list by subject
-		    List<Tutor> filteredTutors = tutors.stream()
-		            .filter(tutor -> tutor.getArea().contains(location))
-		            .collect(Collectors.toList());
-
-		    // Calculate pagination indices
-		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
-		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
-
-		    // Sublist to create a page of tutors
-		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
-
-		    // Return a Page object with the sublist
-		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
-		}
-		
-	 /*TUTORS BY SUBJECT*/
-
-	 public Page<Tutor> paginateTutorsBySubject(List<Tutor> tutors, String subject, int currentPage) {
-		    int pageSize = 10; // Number of tutors per page
-
-		    // Filter the list by subject
-		    List<Tutor> filteredTutors = tutors.stream()
-		            .filter(tutor -> tutor.getSubjects().contains(subject))
-		            .collect(Collectors.toList());
-
-		    // Calculate pagination indices
-		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
-		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
-
-		    // Sublist to create a page of tutors
-		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
-
-		    // Return a Page object with the sublist
-		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
-		}
 	 
-	 /*TUTORS BY SYLLABUS*/
-
-	 public Page<Tutor> paginateTutorsBySyllabus(List<Tutor> filteredTutors,  int currentPage) {
-		    int pageSize = 10; // Number of tutors per page
-
-		    // Calculate pagination indices
-		    int fromIndex = Math.min((currentPage - 1) * pageSize, filteredTutors.size());
-		    int toIndex = Math.min(fromIndex + pageSize, filteredTutors.size());
-
-		    // Sublist to create a page of tutors
-		    List<Tutor> pageOfTutors = filteredTutors.subList(fromIndex, toIndex);
-
-		    // Return a Page object with the sublist
-		    return new PageImpl<>(pageOfTutors, PageRequest.of(currentPage - 1, pageSize), filteredTutors.size());
-		}
-	 
-	 /*VIEW PROFILE*/
-	 
-	 public Page<Tutor> viewProfile(int pageNumber) {
-		    Pageable pageable = PageRequest.of(pageNumber - 1, 5); // No sorting
-		    return repo.findAll(pageable);
-		}
 
 
 	
