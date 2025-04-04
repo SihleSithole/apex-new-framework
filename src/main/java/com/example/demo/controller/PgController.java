@@ -569,8 +569,8 @@ public class PgController {
 	            }
 	        }
 	     
-	    	/*List<Tutor> shuffleTutors = tutorService.shuffleTutors();
-		     List<Tutor> tutors = tutorService.viewProfile(shuffleTutors);
+	    	List<Tutor> shuffleTutors = tutorService.shuffleTutors();
+		     List<Tutor> tutorsList = tutorService.viewProfile(shuffleTutors);
 	 
 	       // String tutorEmail = simpleDecrypt(email);
 	        
