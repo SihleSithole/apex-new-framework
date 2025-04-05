@@ -557,6 +557,8 @@ public class PgController {
 	    @GetMapping("/view-profile")
 	    public String getTry(@RequestParam("email") String email, Model model) {
 	    	
+	    	String searchMail = simpleDecrypt(email);
+	    	
 	    	Tutor tutorView = new Tutor();
 	    	List<Tutor> tutors = tutorService.getAllTutors();
 	    	
@@ -565,7 +567,7 @@ public class PgController {
 	    	
 	        for (Tutor tutor : tutors) {
 	            // If a tutor's email matches the search email, return that tutor
-	            if (tutor.getEmail().equalsIgnoreCase(email)) {
+	            if (tutor.getEmail().equalsIgnoreCase(searchMail)) {
 	            	
 	            	tutorView = tutor;
 	               
@@ -598,12 +600,11 @@ public class PgController {
 	        
 	        for (int i = 0; i < encryptedText.length(); i++) {
 	            char ch = encryptedText.charAt(i);
-	            
-	            // Shift uppercase letters
+	          
 	            if (ch >= 'A' && ch <= 'Z') {
 	                ch = (char) (((ch - 'A' - shift + 26) % 26) + 'A');
 	            }
-	            // Shift lowercase letters
+	         
 	            else if (ch >= 'a' && ch <= 'z') {
 	                ch = (char) (((ch - 'a' - shift + 26) % 26) + 'a');
 	            }
