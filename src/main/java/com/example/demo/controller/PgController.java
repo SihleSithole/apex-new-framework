@@ -567,7 +567,7 @@ public class PgController {
 	    	
 	        for (Tutor tutor : tutors) {
 	            // If a tutor's email matches the search email, return that tutor
-	            if (tutor.getEmail().equalsIgnoreCase(searchMail)) {
+	            if (tutor.getEmail().equalsIgnoreCase(email)) {
 	            	
 	            	tutorView = tutor;
 	               
