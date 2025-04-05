@@ -101,20 +101,20 @@
 						<!--<img th:src="@{/images/{filename}(filename=${tutor.fullNames.replace(' ', '') + '.' + (tutor.imageBase64 == 'jpeg' ? 'jpeg' : 'png')})}" alt="Tutor Image"  loading="lazy" /> -->
 					   <img src="/images/Chrishner.jpeg" loading="lazy" alt="Image 1" class="image image1">
 	                    <div class="name" th:text="${tutor.fullNames}"></div>
-	                    <div class="age"><span th:text="${tutor.fullNames}"></span> years old</div>
-	                    <div class="age"><span th:text="${tutor.fullNames}"></span> experience</div>
+	                    <div class="age"><span th:text="${age}"></span> years old</div>
+	                    <div class="age"><span th:text="${tutor.experience}"></span> experience</div>
 	                </div>
 	                <div class="details">
 	                    <p>
-	                        <span class="static-text">Country :</span> <span class="detail-info"><%= country %></span><br>
-	                        <span class="static-text">Province :</span> <span class="detail-info"><%= province %></span><br>
-	                        <span class="static-text">Area :</span> <span class="detail-info"><%= area %></span><br>
-	                        <span class="static-text">Curriculum :</span> <span class="detail-info"><%= curriculum %></span><br>
-	                        <span class="static-text">Tutoring Option :</span> <span class="detail-info"><%= tutoring %></span>
+	                        <span class="static-text">Country :</span> <span class="detail-info" th:text="${tutor.country}"></span><br>
+	                        <span class="static-text">Province :</span> <span class="detail-info" th:text="${tutor.address}"></span><br>
+	                        <span class="static-text">Area :</span> <span class="detail-info" th:text="${tutor.area}"></span><br>
+	                        <span class="static-text">Curriculum :</span> <span class="detail-info" th:text="${tutor.syllabus}"></span><br>
+	                        <span class="static-text">Tutoring Option :</span> <span class="detail-info" th:text="${tutor.availability}"></span>
 	                    </p>
 	                    <div class="ratings">
 	                        <i class="fas fa-star" id="rate-icon"></i>
-	                        <span id="rate"> <%= ratings %> Ratings</span>
+	                        <span id="rate" th:text="${tutor.ratings}"></span> Ratings
 	                    </div>
 	                    <div class="feedback-item">
 	                        <i class="fas fa-check-circle" id="back-icon"></i>

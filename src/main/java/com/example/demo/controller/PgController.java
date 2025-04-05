@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -584,9 +585,32 @@ public class PgController {
 	        }
 
 		     List<Tutor> tutorsList = tutorService.viewProfile(tutors);
+		     
+		     Date currentDate = new Date();
+	            SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+	            String formattedDate = formatter.format(currentDate);
+	            int currentYear = Integer.parseInt(formattedDate); 
+
+	            Date dob = tutorView.getDob();
+	            formattedDate = formatter.format(dob);
+	            int birthYear = Integer.parseInt(formattedDate);
+
+	            // Calculate age
+	            int age = currentYear - birthYear;
+	            
+	            // Optional: Adjust if the birthday hasn't occurred yet this year
+	            Calendar today = Calendar.getInstance();
+	            Calendar birthDate = Calendar.getInstance();
+	            birthDate.setTime(dob);
+	            
+	            if (today.get(Calendar.MONTH) < birthDate.get(Calendar.MONTH) || 
+	                (today.get(Calendar.MONTH) == birthDate.get(Calendar.MONTH) && today.get(Calendar.DAY_OF_MONTH) < birthDate.get(Calendar.DAY_OF_MONTH))) {
+	                age--; // Decrease age if birthday hasn't occurred yet this year
+	            }
   
 		     model.addAttribute("tutor", tutorView);
 		     model.addAttribute("tutors", tutorsList);
+		     model.addAttribute("age", age);
 		     
 		     model.addAttribute("reviews", review);
 	        
