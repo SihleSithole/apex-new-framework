@@ -208,6 +208,17 @@
 	                            <i class="fas fa-star" id="rate-icon"></i>
 	                            <span id="rev">Reviews</span>
 	                        </div>
+							
+							<th:block th:each="review : ${reviews}">
+							  
+							   <article class="card__article swiper-slide">
+							    <div class="card__data">
+							      <h3 class="card__name" th:text="${review.name}"></h3>
+							        <p class="card__description" th:text="${review.message}"> </p>
+							    </div>
+							    </article>
+								
+							</th:block>
 	                       
 	                   <!--     <div class="swiper-wrapper">
 	                            <%
