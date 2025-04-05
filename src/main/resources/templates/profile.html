@@ -130,8 +130,7 @@
 
 
 	            <div class="matric">
-	                <img src="apex_child.jpeg" alt="Matric">
-
+					<img src="/images/Chrishner.jpeg" loading="lazy" alt="Image 1" class="image image1">
 	            </div>
 	        </div>
 
@@ -142,9 +141,7 @@
 	                <div class="about-tutor-row">
 	                    <div class="about-tutor-title"><i class="far fa-user"></i>&nbsp;&nbsp;Bio</div>
 	                    <div class="about-tutor-info">
-	                        <p id="profile_about">
-	                            <%= descTutor %>
-	                        </p>
+	                        <p id="profile_about" th:text="${tutor.about}"></p>
 	                        <br>
 	                    </div>
 	                </div>
@@ -152,7 +149,11 @@
 	                    <div class="qualifications-title"><i class="fas fa-university"></i>&nbsp;&nbsp;Education</div>
 
 	                    <div class="subjects-info" >
+							
 	                        <ul>
+								<th:block th:each="subject : ${#strings.setSplit(tutor.subjects, ',')}">
+								   <li>•&nbsp;<span th:text="${subject}"></span></li>
+								</th:block>
 	                           <!-- <%
 	                                String[] c = qualifications.split(",");
 	                                for (String s : c) {
@@ -197,7 +198,7 @@
 			    <br>
 			    <!--Book Tutor Button and find tutor-->
 			    <div class="button-action">
-			        <button id="book-tutor-button" class="book-tutor-button" onclick="openOpenopen('<%= fullName %>' , '<%= email %>', '<%= curriculum %>', '<%= grades %> ', '<%= subjects %>')">Book <%= name %></button>
+			        <button id="book-tutor-button" class="book-tutor-button" onclick="openOpenopen('<%= fullName %>' , '<%= email %>', '<%= curriculum %>', '<%= grades %> ', '<%= subjects %>')">Book <span class="detail-info" th:text="${tutor.fullNames}"></span></button>
 			        <button id="find-tutor-button" class="find-tutor-button" onclick="window.location.href='https://bookatutorapexacademiccentre.co.za/bookingTutor';">Find Me A Tutor</button>
 			    </div>
 			</div>
