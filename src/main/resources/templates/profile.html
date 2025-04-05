@@ -151,15 +151,9 @@
 	                    <div class="subjects-info" >
 							
 	                        <ul>
-								<th:block th:each="subject : ${#strings.setSplit(tutor.subjects, ',')}">
-								   <li>•&nbsp;<span th:text="${subject}"></span></li>
+								<th:block th:each="qualifications : ${#strings.setSplit(tutor.bio, ',')}">
+								   <li>•&nbsp;<span th:text="${qualifications}"></span></li>
 								</th:block>
-	                           <!-- <%
-	                                String[] c = qualifications.split(",");
-	                                for (String s : c) {
-	                            %>
-	                                <li>•&nbsp;<%= s.trim() %></li>
-	                            <% } %> -->
 	                        </ul>
 	                        <br><br>
 	                    </div>
@@ -178,13 +172,11 @@
 	                    </div>
 	                  
 	                        <div class="subjects-info">
-	                          <!--  <%
-	                           
-	                                String[] sub = subjects.split(",");
-	                                for (String subject : sub) {
-	                            %>
-	                                <p><%= subject %></p>
-	                            <% } %> -->
+								
+								<th:block th:each="subject : ${#strings.setSplit(tutor.subjects, ',')}">
+								   <p th:text="${subject}"></p>
+								</th:block>
+	                  
 	                            <br><br>
 	                        </div>
 
@@ -198,7 +190,7 @@
 			    <br>
 			    <!--Book Tutor Button and find tutor-->
 			    <div class="button-action">
-			        <button id="book-tutor-button" class="book-tutor-button" onclick="openOpenopen('<%= fullName %>' , '<%= email %>', '<%= curriculum %>', '<%= grades %> ', '<%= subjects %>')">Book <span class="detail-info" th:text="${tutor.fullNames}"></span></button>
+			        <button id="book-tutor-button" class="book-tutor-button" onclick="openOpenopen('<%= fullName %>' , '<%= email %>', '<%= curriculum %>', '<%= grades %> ', '<%= subjects %>')">Book <span th:text="${tutor.fullNames}"></span></button>
 			        <button id="find-tutor-button" class="find-tutor-button" onclick="window.location.href='https://bookatutorapexacademiccentre.co.za/bookingTutor';">Find Me A Tutor</button>
 			    </div>
 			</div>
@@ -243,12 +235,6 @@
 	                                    }
 	                                }
 	                        
-	                                // Display a message if no approved reviews were found
-	                                if (!hasReviews) {
-	                            %>
-	                                    <p>No reviews available.</p>
-	                            <%
-	                                }
 	                            %>
 	                        </div> -->
 	                        
