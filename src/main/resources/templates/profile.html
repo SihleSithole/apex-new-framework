@@ -89,7 +89,192 @@
 	       </a>
 	</div>
 	
+	<!--MAIN CONTENT-->
 	
+	<div class="whole-wrapper">
+	    <div class="main-section">
+
+	        <div class="the-left">
+	            <!-- Tutor's Picture and Info Div -->
+	            <div class="upper-line">
+	                <div class="profile-picture-container">
+	                    <img src="data:image/png;base64,<%= tutorImage %>" alt="Tutor's Picture">
+	                    <div class="name" th:text="${tutor.fullNames}"></div>
+	                    <div class="age"><span th:text="${tutor.fullNames}"></span> years old</div>
+	                    <div class="age"><span th:text="${tutor.fullNames}"></span> experience</div>
+	                </div>
+	                <div class="details">
+	                    <p>
+	                        <span class="static-text">Country :</span> <span class="detail-info"><%= country %></span><br>
+	                        <span class="static-text">Province :</span> <span class="detail-info"><%= province %></span><br>
+	                        <span class="static-text">Area :</span> <span class="detail-info"><%= area %></span><br>
+	                        <span class="static-text">Curriculum :</span> <span class="detail-info"><%= curriculum %></span><br>
+	                        <span class="static-text">Tutoring Option :</span> <span class="detail-info"><%= tutoring %></span>
+	                    </p>
+	                    <div class="ratings">
+	                        <i class="fas fa-star" id="rate-icon"></i>
+	                        <span id="rate"> <%= ratings %> Ratings</span>
+	                    </div>
+	                    <div class="feedback-item">
+	                        <i class="fas fa-check-circle" id="back-icon"></i>
+	                        <span class="back">Background Checked</span>
+	                    </div>
+	                </div>
+	            </div>
+
+	            <!--Book Tutor Button-->
+	            <div class="profile-action">
+	                <button id="book-tutor-button" class="book-tutor-button" onclick="goBack()">Back</button>
+	            </div>
+
+
+	            <div class="matric">
+	                <img src="apex_child.jpeg" alt="Matric">
+
+	            </div>
+	        </div>
+
+	        <div class="right-side">
+
+	            <div class="profile-container">
+
+	                <div class="about-tutor-row">
+	                    <div class="about-tutor-title"><i class="far fa-user"></i>&nbsp;&nbsp;Bio</div>
+	                    <div class="about-tutor-info">
+	                        <p id="profile_about">
+	                            <%= descTutor %>
+	                        </p>
+	                        <br>
+	                    </div>
+	                </div>
+	                <div class="qualifications-row">
+	                    <div class="qualifications-title"><i class="fas fa-university"></i>&nbsp;&nbsp;Education</div>
+
+	                    <div class="subjects-info" >
+	                        <ul>
+	                           <!-- <%
+	                                String[] c = qualifications.split(",");
+	                                for (String s : c) {
+	                            %>
+	                                <li>•&nbsp;<%= s.trim() %></li>
+	                            <% } %> -->
+	                        </ul>
+	                        <br><br>
+	                    </div>
+	                    <br><br>
+
+	                </div>
+	                <div class="subjects-row">
+	                    <div class="subjects-title">
+	                        <div class="school_head">
+	                            <i class="fa fa-book"></i>&nbsp;&nbsp;Subjects
+	                        </div>
+	                        <div class="bongi">
+	                            School tutoring<br>
+	                            <span class="grades">GRD:1 - GRD:12</span>
+	                        </div>
+	                    </div>
+	                  
+	                        <div class="subjects-info">
+	                          <!--  <%
+	                           
+	                                String[] sub = subjects.split(",");
+	                                for (String subject : sub) {
+	                            %>
+	                                <p><%= subject %></p>
+	                            <% } %> -->
+	                            <br><br>
+	                        </div>
+
+	                </div>
+	               
+	            </div>
+			
+			
+			<div class="short-paragraph">
+			    Your Personal Tutor in the Comfort of Your Own Home
+			    <br>
+			    <!--Book Tutor Button and find tutor-->
+			    <div class="button-action">
+			        <button id="book-tutor-button" class="book-tutor-button" onclick="openOpenopen('<%= fullName %>' , '<%= email %>', '<%= curriculum %>', '<%= grades %> ', '<%= subjects %>')">Book <%= name %></button>
+			        <button id="find-tutor-button" class="find-tutor-button" onclick="window.location.href='https://bookatutorapexacademiccentre.co.za/bookingTutor';">Find Me A Tutor</button>
+			    </div>
+			</div>
+			
+
+	            <div class="long-paragraph">
+	                See the feedback and accolades from individuals who have experienced my work firsthand.
+	            </div>
+
+	            <section class="container">
+
+	                <div class="card__container swiper">
+	                    <div class="card__content">
+	                        <div class="reviews1">
+	                            <i class="fas fa-star" id="rate-icon"></i>
+	                            <span id="rev">Reviews</span>
+	                        </div>
+	                       
+	                   <!--     <div class="swiper-wrapper">
+	                            <%
+	                                List<Review> reviews = (List<Review>) request.getAttribute("reviews");
+	                                boolean hasReviews = false; // Flag to check if there are any approved reviews
+	                        
+	                                if (reviews != null) {
+	                                    for (Review r : reviews) {
+	                                        String emailTutor = r.getTutorEmail().trim().replaceAll("\\s+", "");
+	                                        if (emailTutor.equals(email) && r.getStatus().equals("approved")) {
+	                                            hasReviews = true; // Set flag if there's at least one approved review
+	                                            String tutName = r.getName();
+	                                            String reviewDescription = r.getMessage();
+	                            %>
+	                                            <article class="card__article swiper-slide">
+	                                                <div class="card__data">
+	                                                    <h3 class="card__name"><%= tutName %></h3>
+	                                                    <p class="card__description">
+	                                                        <%= reviewDescription != null ? reviewDescription : "No description available." %>
+	                                                    </p>
+	                                                </div>
+	                                            </article>
+	                            <%
+	                                        }
+	                                    }
+	                                }
+	                        
+	                                // Display a message if no approved reviews were found
+	                                if (!hasReviews) {
+	                            %>
+	                                    <p>No reviews available.</p>
+	                            <%
+	                                }
+	                            %>
+	                        </div> -->
+	                        
+	                
+	                        <!-- Navigation buttons -->
+	                        <div class="swiper-button-next">
+	                            <i class="ri-arrow-right-s-line"></i>
+	                        </div>
+	                
+	                        <div class="swiper-button-prev">
+	                            <i class="ri-arrow-left-s-line"></i>
+	                        </div>
+	                
+	                        <!-- Pagination -->
+	                        <div class="swiper-pagination"></div>
+	                    </div>
+	                </div>
+	                
+	                
+	            </section>
+
+
+
+	        </div>
+
+	    </div>
+
+	</div>
 	
 	
 	
