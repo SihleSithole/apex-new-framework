@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -555,10 +555,13 @@ public class PgController {
 	 
 	 
 	    @GetMapping("/view-profile")
-	    public String getTry(@RequestParam("email") String email) {
+	    public String getTry(@RequestParam("email") String email, Model model) {
 	    	
 	    	Tutor tutorView = new Tutor();
 	    	List<Tutor> tutors = tutorService.getAllTutors();
+	    	
+	    	List<Review> review = new ArrayList<>();
+	    	List<Review> reviews = reviewService.loadedReviews();
 	    	
 	        for (Tutor tutor : tutors) {
 	            // If a tutor's email matches the search email, return that tutor
@@ -568,29 +571,22 @@ public class PgController {
 	               
 	            }
 	        }
-	     
-	    	List<Tutor> shuffleTutors = tutorService.shuffleTutors();
-		     List<Tutor> tutorsList = tutorService.viewProfile(shuffleTutors);
-	 
-	       // String tutorEmail = simpleDecrypt(email);
 	        
-	      /*  Optional<Tutor> opT = tutorRepo.findById(tutorEmail);
-	        Tutor tutor = new Tutor();
-	        
-	        List<Review> reviews = reviewService.listAll();
-	            
-	        if (opT.isPresent()){
-	            tutor = opT.get();
+	        for (Review rev : reviews) {
+	            // If a tutor's email matches the search email, return that tutor
+	            if (rev.getTutorEmail().equalsIgnoreCase(email)) {
+	            	
+	            	review.add(rev);
+	               
+	            }
 	        }
-	        
-	        String name = tutor.getFullNames();
 
-	     /*   ModelAndView data = new ModelAndView("profile.jsp"); // load the admin dashboard
-	        data.addObject("tutor", tutor);
-	        data.addObject("tutors", tutors);
-	        data.addObject("name", name);
-	        data.addObject("reviews", reviews);	 
-	        data.addObject("email", email);	*/
+		     List<Tutor> tutorsList = tutorService.viewProfile(tutors);
+  
+		     model.addAttribute("tutor", tutorView);
+		     model.addAttribute("tutors", tutorsList);
+		     
+		     model.addAttribute("reviews", review);
 	        
 	        return "profile";   
 	        

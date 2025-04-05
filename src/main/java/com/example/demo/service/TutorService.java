@@ -1,20 +1,17 @@
 package com.example.demo.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Projection.TutorProjection;
 import com.example.demo.model.Tutor;
 import com.example.demo.repository.TutorRepository;
 
@@ -28,7 +25,6 @@ public class TutorService {
 	private TutorRepository repo;
 	
 	private List<Tutor> tutors;
-	private List<Tutor> shuffleTutors;
 	
     @PostConstruct
     public void init() {
@@ -46,23 +42,13 @@ public class TutorService {
         }
         
         System.out.println("Tutor data preloaded at startup!");
-        
-        Collections.shuffle(tutors);
-
-        // Pick the first 'pageSize' tutors after shuffling (5 tutors in this case)
-       shuffleTutors = tutors.subList(0, Math.min(100, tutors.size()));
-
-        
+                
     }
     
     public List<Tutor> getAllTutors() {
         return tutors;
     }
-    
-    public List<Tutor> shuffleTutors() {
-        return shuffleTutors;
-    }
-		
+    	
 	/*TUTORS BY LOCATION*/
 	 
 	 public Page<Tutor> paginateTutorsByLocation(List<Tutor> tutors, String location, int currentPage) {

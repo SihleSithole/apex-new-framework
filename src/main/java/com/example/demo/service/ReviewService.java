@@ -2,11 +2,15 @@ package com.example.demo.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.model.Review;
+import com.example.demo.model.Tutor;
 import com.example.demo.repository.ReviewRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class ReviewService {
@@ -16,6 +20,22 @@ public class ReviewService {
 	
 	@Autowired
 	private TutorService tutorService;
+	
+	private List<Review> reviews;
+	
+    @PostConstruct
+    public void init() {
+        // Load data from the database when the application starts
+    	reviews = repo.findAll();  // Or your custom query
+        
+        System.out.println("Reviews Loaded.");
+                
+    }
+    
+	public List<Review> loadedReviews(){
+		
+		 return reviews;
+	}
 	
 	public List<Review> listAll(){
 		
