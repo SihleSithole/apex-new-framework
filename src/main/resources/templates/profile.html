@@ -209,45 +209,21 @@
 	                            <span id="rev">Reviews</span>
 	                        </div>
 							
-							<th:block th:each="review : ${reviews}">
-							  
-							   <article class="card__article swiper-slide">
-							    <div class="card__data">
-							      <h3 class="card__name" th:text="${review.name}"></h3>
-							        <p class="card__description" th:text="${review.message}"> </p>
-							    </div>
-							    </article>
+							
+	                        <div class="swiper-wrapper">
 								
-							</th:block>
+								<th:block th:each="review : ${reviews}">
+								  
+								   <article class="card__article swiper-slide">
+								    <div class="card__data">
+								      <h3 class="card__name" th:text="${review.name}"></h3>
+								        <p class="card__description" th:text="${review.message}"> </p>
+								    </div>
+								    </article>
+									
+								</th:block>
 	                       
-	                   <!--     <div class="swiper-wrapper">
-	                            <%
-	                                List<Review> reviews = (List<Review>) request.getAttribute("reviews");
-	                                boolean hasReviews = false; // Flag to check if there are any approved reviews
-	                        
-	                                if (reviews != null) {
-	                                    for (Review r : reviews) {
-	                                        String emailTutor = r.getTutorEmail().trim().replaceAll("\\s+", "");
-	                                        if (emailTutor.equals(email) && r.getStatus().equals("approved")) {
-	                                            hasReviews = true; // Set flag if there's at least one approved review
-	                                            String tutName = r.getName();
-	                                            String reviewDescription = r.getMessage();
-	                            %>
-	                                            <article class="card__article swiper-slide">
-	                                                <div class="card__data">
-	                                                    <h3 class="card__name"><%= tutName %></h3>
-	                                                    <p class="card__description">
-	                                                        <%= reviewDescription != null ? reviewDescription : "No description available." %>
-	                                                    </p>
-	                                                </div>
-	                                            </article>
-	                            <%
-	                                        }
-	                                    }
-	                                }
-	                        
-	                            %>
-	                        </div> -->
+	                        </div> 
 	                        
 	                
 	                        <!-- Navigation buttons -->
