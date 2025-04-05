@@ -1,11 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Thymeleaf Example</title>
+	<!--<title>Book a Tutor | Expert Online and In-person Tutors | Apex Academic Centre</title>-->
+	<title>${tutor.fullNames} | Tutor Profile | Expert Online and In-person Tutors | Apex Academic Centre</title>
+	<meta name="description"
+		content="Get personalized tutoring with Apex Academic Centre's expert online and in-person tutors. Book your tutor today!">
+
+	<link rel="icon" href="seo_logo.jpeg" sizes="50x50" type="image/x-icon">
+
+	<!-- Open Graph Protocol (Facebook, LinkedIn) -->
+	<meta property="og:title" content="${tutor.fullNames} | Expert Online and In-person Tutors | Apex Academic Centre">
+	<meta property="og:description"
+		content="Get personalized tutoring with Apex Academic Centre's expert online and in-person tutors. Book your tutor today!">
+	<meta property="og:image" content="https://bookatutorapexacademiccentre.co.za/seo.jpeg">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:url" content="https://bookatutorapexacademiccentre.co.za/view-profile/name=${tutor.fullNames}">
+	<meta property="og:type" content="website">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="${tutor.fullNames} | Expert Online and In-person Tutors | Apex Academic Centre">
+	<meta name="twitter:description"
+		content="Get personalized tutoring with Apex Academic Centre's expert online and in-person tutors. Book your tutor today!">
+	<meta name="twitter:image" content="https://bookatutorapexacademiccentre.co.za/seo.jpeg">
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--=============== REMIXICONS ===============-->
+	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+	<!--=============== SWIPER CSS ===============-->
+	
+
+	<link rel="preload" href="/css/Profile.css" as="style" />
+	<link rel="stylesheet" href="/css/Profile.css" th:href="@{/css/Profile.css}" />
+	
+	<!--<link rel="stylesheet" href="assets/swiper-bundle.min.css"> -->
+
 </head>
 <body>
-    <h1>Welcome to Thymeleaf!</h1>
-    <p>This is a placeholder for the message.</p>
+	
+	  <nav class="navbar">
+	      <img src="apex.png" alt="Logo" class="logo" id="logo_image">
+	      <button class="navbar-toggle" id="navbar-toggle">
+	          <i class="fas fa-bars"></i> <!-- Hamburger icon -->
+	      </button>
+	      <ul class="nav-links">
+	          <li><a href="https://www.apexacademiccentre.co.za/">Home</a></li>
+	          <li><a href="https://bookatutorapexacademiccentre.co.za/">Tutors</a></li>
+	          <li class="dropdown">
+	              <a href="#" class="dropbtn">Tutoring <i class="fas fa-chevron-down"></i></a>
+	              <div class="dropdown-content">
+	                  <a href="https://www.apexacademiccentre.co.za/online-tutoring/">Online Tutoring</a>
+	                  <a href="https://www.apexacademiccentre.co.za/in-person-tutoring/">In Person Tutoring</a>
+	                  <a href="https://www.apexacademiccentre.co.za/matric-rewrite-2025/">Matric Re-Write</a>
+	                  <a href="https://www.apexacademiccentre.co.za/special-needs-tutoring/">Special Need Tutoring</a>
+	                  <a href="https://www.apexacademiccentre.co.za/cambridge-tutoring/">Cambridge Tutoring</a>
+	                  <a href="https://www.apexacademiccentre.co.za/university-college-tutors/">University/ College
+	                      Tutors</a>
+	                  <a href="https://www.apexacademiccentre.co.za/pearson-edexcel-tutoring/">Person Edexcel Tutoring</a>
+	              </div>
+	          </li>
+
+	          <li><a href="https://www.apexacademiccentre.co.za/homeschooling-support/">Homeschooling</a></li>
+	          <li><a href="https://www.apexacademiccentre.co.za/resources/">Resources</a></li>
+	          <li><a href="https://www.apexacademiccentre.co.za/contact-us/">Contact</a></li>
+
+
+	          <li>
+	              <button class="login-register" id="tutorBtn">
+	                 BOOK TUTOR
+	              </button>
+	          </li>
+	      </ul>
+	  </nav>
+
+
+	  <div class="whatsapp-wrapper">
+	      <a href="https://wa.me/27680351845?text=Hi%20*Apex%20Academic%20Centre*!%20I%20need%20more%20info%20about%20Apex%20Academic%20Centre%20https://www.apexacademiccentre.co.za" target="_blank" class="whatsapp-icon">
+	        <i class="fab fa-whatsapp" style="font-size: 40px; color: #fff; "></i> 
+	       </a>
+	</div>
+	
+	
+	
+	
+	
+
+	
 </body>
 </html>
