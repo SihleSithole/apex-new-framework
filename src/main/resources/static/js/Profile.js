@@ -1,4 +1,6 @@
 /*=============== SWIPER JS ===============*/
+alert("1");
+
 let swiperCards = new Swiper(".card__content", {
   loop: true,
   spaceBetween: 32,
